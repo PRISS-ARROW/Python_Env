@@ -39,15 +39,17 @@ class sql_data(sql_connect):
     def __init__(self, db_name, table1_name, table2_name):
         super().__init__(db_name, table1_name, table2_name)
 
-    def create_table(self, name_table):
+    def create_table(self, name_table, number):
         """
-        Creating tables in a database which use another the number of columns of another table to define the index
-        number of the new tables.
+        Creating tables in a existing database.
 
         Parameters
         ----------
         name_table : str
             The name for the new tables.
+
+        number : str
+            How much tables should be create.
 
         Returns
         -------
@@ -60,19 +62,20 @@ class sql_data(sql_connect):
         """
         # Create the tables.
         try:
-            for i in range(1, self.number_columns1 + 1):
+            for i in range(1, number + 1):
                 create_table = "CREATE TABLE " + name_table + str(i) + "(id int)"  # Add the index to the new table
                 # name.
-                self.cursor.execute(create_table)
+                self.cursor.execute(create_table)  # Execute the creating of a new table
         except TypeError:
             print("Please insert for the two variables only string data.")  # Exception if the user fill the input data
             # with the wrong type.
 
 
-#if __name__ == "__main__":
-    #conn = sql.connect("find_ideal_function.db")
-    #train_data.to_sql("train", conn)
-    #ideal_data.to_sql("ideal", conn)
-    #test_data.to_sql("test", conn)
-    #c = sql_data("find_ideal_function.db", "train", "ideal")
-    #c.create_table("y_deviation")
+if __name__ == "__main__":
+    conn = sql.connect("find_ideal_function.db")  # Create a database in sql.
+    train_data.to_sql("train", conn)  # Create a sql table with the train data.
+    ideal_data.to_sql("ideal", conn)  # Create a sql table with the ideal functions.
+    test_data.to_sql("test", conn)  # Create a sql table with the test data.
+    new_tables = sql_data("find_ideal_function.db", "train", "ideal")  # Create instance of the class sql_data.
+    new_tables.create_table("y_deviation", 4)  # Create 4 new tables for all deviations between the train data and the
+    # ideal functions.
